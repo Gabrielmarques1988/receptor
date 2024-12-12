@@ -6,16 +6,14 @@ pipeline {
         stage('Verificar Repositório') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']],
-                          userRemoteConfigs: [[url:'']]])
+                          userRemoteConfigs: [[url: 'https://github.com/Gabrielmarques1988/Receptor.git']]])
             }
         }
-
-
 
         stage('Construir Imagem Docker') {
             steps {
                 script {
-                    def appName = 'Receptor'
+                    def appName = 'receptor'
                     def imageTag = "${appName}:${env.BUILD_ID}"
                     bat "docker build -t ${imageTag} ."
                 }
@@ -25,7 +23,7 @@ pipeline {
         stage('Fazer Deploy') {
             steps {
                 script {
-                    def appName = 'Receptor'
+                    def appName = 'receptor'
                     def imageTag = "${appName}:${env.BUILD_ID}"
                     bat "docker stop ${appName} || exit 0"
                     bat "docker rm ${appName} || exit 0"
@@ -34,6 +32,7 @@ pipeline {
             }
         }
     }
+
 
     post {
         success {
